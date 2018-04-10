@@ -34,12 +34,15 @@
 #include <stdint.h>
 #include <string.h>
 #include <ctime>
+#include <vector>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "SerialDevice.h"
 
+#define PI 3.14159265359
+#define READ_BUFFER_SIZE 2000
 //! Converts degrees to radians
-inline double deg_to_rad(double val) { return val * M_PI / 180.0; }
+inline double deg_to_rad(double val) { return val * PI / 180.0; }
 
 // The laser device class.
 class SickS3000
@@ -60,7 +63,7 @@ public:
 	  float scan_time;
 	  float range_min;
 	  float range_max;
-	  float * ranges;
+	  std::vector<float> ranges;
   };
 
   //! Open the port
@@ -92,7 +95,6 @@ protected:
   uint8_t *rx_buffer;
   unsigned int rx_buffer_size;
   unsigned int rx_count;
-
-  static const size_t READ_BUFFER_SIZE = 2000;
+  
   char read_buffer_[READ_BUFFER_SIZE];
 };

@@ -116,11 +116,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="LaserScanner.h" />
+    <ClInclude Include="rs232.h" />
     <ClInclude Include="SerialDevice.h" />
     <ClInclude Include="sicks3000.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LaserScanner.cpp" />
+    <ClCompile Include="rs232.c" />
     <ClCompile Include="SerialDevice.cc" />
     <ClCompile Include="sicks3000.cc" />
   </ItemGroup>
