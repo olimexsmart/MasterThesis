@@ -19,9 +19,6 @@ private:
 	//BaudRate: 9600, 19200, 38400, 115200, 500000
 	const int baudrate;
 
-
-	int serial_port_; // File descriptor
-
 public:
 	SerialDevice(const char * Device, int Baudrate, const char * Mode);
 	virtual ~SerialDevice();
@@ -29,8 +26,7 @@ public:
 	bool OpenPort();
 	void ClosePort();
 	bool ReadPort(unsigned char *result, int bytes_to_read, int &bytes_read);	
-
-private:	
+	bool WritePort(unsigned char * buffer, int size);	
 
 };
 

@@ -26,13 +26,13 @@ bool SerialDevice::OpenPort()
 	{
 		printf("Can not open comport\n");
 
-		return true;
+		return false;
 	}
 
 	// Flush buffers to make sure are empty
 	RS232_flushRXTX(device);
 
-	return false;
+	return true;
 }
 
 /*
@@ -52,4 +52,7 @@ bool SerialDevice::ReadPort(unsigned char *buffer, int bytes_to_read, int &bytes
 	return bytes_to_read >= 0;
 }
 
-
+bool SerialDevice::WritePort(unsigned char * buffer, int size) {
+	
+	return RS232_SendBuf(device, buffer, size) != -1;
+}
