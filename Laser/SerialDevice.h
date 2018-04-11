@@ -4,38 +4,33 @@
 
 #ifndef __SERIALDEV_H
 #define __SERIALDEV_H
-	
+
 #include <stdio.h>
 #include <string>
 #include "rs232.h"
 
 class SerialDevice
 {
-private:	
+private:
 	//Device's name
-	const std::string device_;	
+	int device;
 	//Parity for input and output: EVEN, ODD, NONE
-	const std::string parity_;	
+	const char * mode;
 	//BaudRate: 9600, 19200, 38400, 115200, 500000
-	const int baudrate_;
-	//Character size mask. Values are CS5, CS6, CS7, or CS8.
-	const int datasize_;
+	const int baudrate;
+
 
 	int serial_port_; // File descriptor
 
 public:
-	SerialDevice(const char *device, int baudrate,const char *parity, int datasize);	
+	SerialDevice(int Device, int Baudrate, const char * Mode);
 	virtual ~SerialDevice();
-	
-	bool OpenPort();
-	bool ClosePort();
-	bool ReadPort( char *result, int bytes_to_read, int &bytes_read );
 
-	const char* GetDevice() const { return device_.c_str(); }
-	
-private:
-	//!	Set serial communication speed.
-	bool SetTermSpeed(int speed);
+	bool OpenPort();
+	void ClosePort();
+	bool ReadPort(unsigned char *result, int bytes_to_read, int &bytes_read);	
+
+private:	
 
 };
 

@@ -26,6 +26,7 @@
  its measured data on the RS422 data lines.
 */
 
+#pragma comment(lib, "Ws2_32.lib")
 #include <Winsock2.h> // htons
 #include "sicks3000.h"
 
@@ -35,8 +36,8 @@
 /*!	\fn SickS3000::SickS3000()
  * 	\brief Public constructor
 */
-SickS3000::SickS3000(std::string port, int baudrate, std::string parity, int datasize)
-    : serial_(port.c_str(), baudrate, parity.c_str(), datasize)
+SickS3000::SickS3000(int device, int baudrate, const char * mode)
+    : serial_(device, baudrate, mode)
 {
   rx_count = 0;
   // allocate our recieve buffer
@@ -67,9 +68,9 @@ bool SickS3000::Open()
  * 	\returns ERROR
  * 	\returns OK
 */
-bool SickS3000::Close()
+void SickS3000::Close()
 {
-  return serial_.ClosePort();
+  serial_.ClosePort();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -78,12 +79,12 @@ bool SickS3000::SetScannerParams(SickS3000::LaserData &scan, int data_count)
 {
   if (data_count == 761) // sicks3000
   {
-    float freq_hz = 16.6;
+    float freq_hz = 16.6f;
 
     scan.angle_min = deg_to_rad(-95);
     scan.angle_max = deg_to_rad(95);
     scan.angle_increment = deg_to_rad(0.25);
-    scan.scan_time = 1.0 / freq_hz;
+    scan.scan_time = 1.0f / freq_hz;
     scan.time_increment = scan.scan_time / data_count;
     scan.range_min = 0;
     scan.range_max = 49; // check ?
@@ -98,7 +99,7 @@ bool SickS3000::SetScannerParams(SickS3000::LaserData &scan, int data_count)
     scan.angle_min = deg_to_rad(-95);
     scan.angle_max = deg_to_rad(95);
     scan.angle_increment = deg_to_rad(0.5);
-    scan.scan_time = 1.0 / freq_hz;
+    scan.scan_time = 1.0f / freq_hz;
     scan.time_increment = scan.scan_time / data_count;
     scan.range_min = 0;
     scan.range_max = 49; // check ?
@@ -108,12 +109,12 @@ bool SickS3000::SetScannerParams(SickS3000::LaserData &scan, int data_count)
 
   if (data_count == 541) // sicks30b
   {
-    float freq_hz = 12.7;
+    float freq_hz = 12.7f;
 
     scan.angle_min = deg_to_rad(-135);
     scan.angle_max = deg_to_rad(135);
     scan.angle_increment = deg_to_rad(0.5);
-    scan.scan_time = 1.0 / freq_hz;
+    scan.scan_time = 1.0f / freq_hz;
     scan.time_increment = scan.scan_time / data_count;
     scan.range_min = 0;
     scan.range_max = 40; // check ? 30m in datasheet
@@ -259,7 +260,7 @@ int SickS3000::ProcessLaserData(SickS3000::LaserData &scan, bool &bValidData)
           printf("reflectors=%u", reflector_count);
           bValidData = (reflector_count > 0);
 
-          uint32_t reflector_data, num_ranges = (scan.angle_max - scan.angle_min) / scan.angle_increment;
+          uint32_t reflector_data, num_ranges = (uint32_t) ((scan.angle_max - scan.angle_min) / scan.angle_increment);
 
 		  time_t t = std::time(0);		  
           scan.timestamp = static_cast<long int> (t);
@@ -275,11 +276,11 @@ int SickS3000::ProcessLaserData(SickS3000::LaserData &scan, bool &bValidData)
             int raw_dist = (reflector_data >> 16) & 0x1FFF; // read 13 bits
             printf("reflector %lu: angle=%.2fdeg distance=%.2fm", i, raw_angle * 0.01, raw_dist * 0.01);
 
-            float scan_angle = scan.angle_max - deg_to_rad(raw_angle * 0.01);
-            int range_idx = (scan.angle_max - scan_angle) / scan.angle_increment;
+            float scan_angle = scan.angle_max - deg_to_rad(raw_angle * 0.01f);
+            int range_idx = (int) ((scan.angle_max - scan_angle) / scan.angle_increment);
 
-            if (range_idx >= 0 && range_idx < scan.ranges.size())
-              scan.ranges[range_idx] = raw_dist * 0.01;
+            if (range_idx >= 0 && (size_t) range_idx < scan.ranges.size())
+              scan.ranges[range_idx] = raw_dist * 0.01f;
             else
               printf("invalid reflector angle=%.2frad, idx=%d/%lu", scan_angle, range_idx, scan.ranges.size());
           }

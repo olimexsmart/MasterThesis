@@ -76,7 +76,9 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <Link />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -116,15 +118,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="LaserScanner.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="rs232.h" />
     <ClInclude Include="SerialDevice.h" />
     <ClInclude Include="sicks3000.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LaserScanner.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="rs232.c" />
     <ClCompile Include="SerialDevice.cc" />
     <ClCompile Include="sicks3000.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Laser.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

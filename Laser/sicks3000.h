@@ -39,17 +39,17 @@
 #include <sys/stat.h>
 #include "SerialDevice.h"
 
-#define PI 3.14159265359
+#define PI 3.14159265359f
 #define READ_BUFFER_SIZE 2000
 //! Converts degrees to radians
-inline double deg_to_rad(double val) { return val * PI / 180.0; }
+inline float deg_to_rad(float val) { return val * PI / 180.0f; }
 
 // The laser device class.
 class SickS3000
 {
 public:
   // Constructor
-  SickS3000(std::string port, int baudrate, std::string parity, int datasize);
+  SickS3000(int device, int baudrate, const char * mode);
 
   // Destructor
   ~SickS3000();
@@ -70,7 +70,7 @@ public:
   bool Open();
 
   //! Close the port
-  bool Close();
+  void Close();
 
   //! Read and process data
   bool ReadLaser(SickS3000::LaserData &scan);
@@ -96,5 +96,5 @@ protected:
   unsigned int rx_buffer_size;
   unsigned int rx_count;
   
-  char read_buffer_[READ_BUFFER_SIZE];
+  unsigned char read_buffer_[READ_BUFFER_SIZE];
 };
