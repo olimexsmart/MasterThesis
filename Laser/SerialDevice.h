@@ -23,7 +23,7 @@ private:
 	int serial_port_; // File descriptor
 
 public:
-	SerialDevice(int Device, int Baudrate, const char * Mode);
+	SerialDevice(const char * Device, int Baudrate, const char * Mode);
 	virtual ~SerialDevice();
 
 	bool OpenPort();

@@ -5,8 +5,8 @@
 
 /*
 */
-SerialDevice::SerialDevice(int Device, int Baudrate, const char * Mode)
-	: device(Device), mode(Mode), baudrate(Baudrate)
+SerialDevice::SerialDevice(const char * Device, int Baudrate, const char * Mode)
+	: device(RS232_GetPortnr(Device)), mode(Mode), baudrate(Baudrate)
 {
 	// Some info print here if are that inclined
 }
@@ -28,6 +28,9 @@ bool SerialDevice::OpenPort()
 
 		return true;
 	}
+
+	// Flush buffers to make sure are empty
+	RS232_flushRXTX(device);
 
 	return false;
 }

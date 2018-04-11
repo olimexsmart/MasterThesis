@@ -48,53 +48,53 @@ inline float deg_to_rad(float val) { return val * PI / 180.0f; }
 class SickS3000
 {
 public:
-  // Constructor
-  SickS3000(int device, int baudrate, const char * mode);
+	// Constructor
+	SickS3000(const char * Device, int Baudrate, const char * Mode);
 
-  // Destructor
-  ~SickS3000();
+	// Destructor
+	~SickS3000();
 
-  struct LaserData {
-	  unsigned int timestamp;
-	  float angle_min;
-	  float angle_max;
-	  float angle_increment;
-	  float time_increment;
-	  float scan_time;
-	  float range_min;
-	  float range_max;
-	  std::vector<float> ranges;
-  };
+	struct LaserData {
+		unsigned int timestamp;
+		float angle_min;
+		float angle_max;
+		float angle_increment;
+		float time_increment;
+		float scan_time;
+		float range_min;
+		float range_max;
+		std::vector<float> ranges;
+	};
 
-  //! Open the port
-  bool Open();
+	//! Open the port
+	bool Open();
 
-  //! Close the port
-  void Close();
+	//! Close the port
+	void Close();
 
-  //! Read and process data
-  bool ReadLaser(SickS3000::LaserData &scan);
+	//! Read and process data
+	bool ReadLaser(SickS3000::LaserData &scan);
 
 private:
-  // Process range data from laser
-  // int ProcessLaserData();
-  int ProcessLaserData(SickS3000::LaserData &scan_msg, bool &bValidData); // public periodic function
+	// Process range data from laser
+	// int ProcessLaserData();
+	int ProcessLaserData(SickS3000::LaserData &scan_msg, bool &bValidData); // public periodic function
 
-  // Calculates CRC for a telegram
-  static unsigned short CreateCRC(const uint8_t *data, size_t len);
+	// Calculates CRC for a telegram
+	static unsigned short CreateCRC(const uint8_t *data, size_t len);
 
-  static bool SetScannerParams(SickS3000::LaserData &scan, int data_count);
+	static bool SetScannerParams(SickS3000::LaserData &scan, int data_count);
 
 protected:
-  // serial port
-  SerialDevice serial_;
+	// serial port
+	SerialDevice serial_;
 
-  bool recognisedScanner;
+	bool recognisedScanner;
 
-  // rx buffer
-  uint8_t *rx_buffer;
-  unsigned int rx_buffer_size;
-  unsigned int rx_count;
-  
-  unsigned char read_buffer_[READ_BUFFER_SIZE];
+	// rx buffer
+	uint8_t *rx_buffer;
+	unsigned int rx_buffer_size;
+	unsigned int rx_count;
+
+	unsigned char read_buffer_[READ_BUFFER_SIZE];
 };
