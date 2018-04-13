@@ -1,15 +1,14 @@
 #include "sicks3000.h"
 //#include "SerialDevice.h"
 #include <stdlib.h>
-#define WAIT 50
+#define WAIT 60
 
 int main() {
-	char TXbuffer[100] = "10000";
-	char RXbuffer[10000];
 	int baudrate = 500000;
 	const char mode[] = { '8','N','1',0 };
-	char portname[10] = "COM10";
-	int bytesRead;
+	char portname[10] = "COM10";	
+	char terminalBuff[10000] = "\0";
+	char formatBuff[30];
 
 	// Decomment if needed to change default values
 	//printf("Port name:\t");
@@ -21,25 +20,33 @@ int main() {
 	SickS3000::LaserData ld;
 	// Laser instance
 	SickS3000 laser(portname, baudrate, mode);
+	laser.Open();
 
 	while (true) {
-		if (laser.ReadLaser(ld)) {
+		if (laser.ReadLaser(ld)) {			
 			// Print the data
-			printf("%u\n", ld.timestamp);
+			sprintf(formatBuff, "%u\n", ld.timestamp);
+			strcat(terminalBuff, formatBuff);
 			int i = 0;
 			for (auto const & r : ld.ranges) {
 				i++;
-				if (i % 10 == 0)
-					printf("\n");
+				if (i % 20 == 0)
+					sprintf(formatBuff, "%.2f\n", r);
+				else
+					sprintf(formatBuff, "%.2f\t", r);
 
-				printf("%.2f\t", r);
+				strcat(terminalBuff, formatBuff);
 			}
+			system("cls");
+			puts(terminalBuff);
+			terminalBuff[0] = '\0';
 		}
-		else
+		/*else
 			break;
-
+			*/
 		Sleep(WAIT);
 	}
+
 
 	return 0;
 }

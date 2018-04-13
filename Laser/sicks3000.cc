@@ -193,15 +193,22 @@ int SickS3000::ProcessLaserData(SickS3000::LaserData &scan, bool &bValidData)
 		}
 
 		// check if we have enough data yet
-		if (size > rx_count - 4)
+		if (size > (rx_count - 4))
 			return 0;
 
+		//Otherwise underflow happens and get stuck in infinite loop
+		if (size < 2)
+			return 0;
+			
 		unsigned short packet_checksum = *reinterpret_cast<unsigned short *>(&rx_buffer[size + 2]);
 		unsigned short calc_checksum = CreateCRC(&rx_buffer[4], size - 2);
 		if (packet_checksum != calc_checksum)
-		{
-			printf("S3000: Checksum's dont match, thats bad (data packet size %d)", size);
+		{										
 			memmove(rx_buffer, &rx_buffer[1], --rx_count);
+			// UGLIEST THING EVER BUT WITHOUT DATASHEET ITS IMPOSSIBLE TO UNDERSTAND
+			if (size == 1544 || size == 6) 
+				continue;
+			printf("S3000: Checksum's dont match, thats bad (data packet size %d)", size);
 			continue; // Bad checksum, get out of here
 		}
 		else // Checksum went well
@@ -235,6 +242,8 @@ int SickS3000::ProcessLaserData(SickS3000::LaserData &scan, bool &bValidData)
 					}
 
 					// Scan data, clear ranges, keep configuration
+					time_t t = std::time(0);
+					scan.timestamp = static_cast<long int> (t);
 					scan.ranges.clear();
 					// scan.ranges_count = data_count;
 					scan.ranges.resize(data_count); //

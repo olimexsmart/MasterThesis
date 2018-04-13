@@ -193,6 +193,8 @@ ClientBin/
 *.pfx
 *.publishsettings
 node_modules/
+enc_temp_folder/
+desktop.ini
 orleans.codegen.cs
 
 # Since there are multiple workflows, uncomment next line to ignore bower_components
